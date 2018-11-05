@@ -4,11 +4,10 @@
  * Simplest possible example shows a single strand of NeoPixels. See Demo1 for multiple strands and other devices.
  */
 
-strand_t pStrand = {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels = 20,
+int pixCount = 30;
+strand_t pStrand = {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_SK6812W_V1, .brightLimit = 32, .numPixels = pixCount,
    .pixels = nullptr, ._stateVars = nullptr};
 
-int stepper = 0;
-int colord = 0;
 
 void setup()
 {
@@ -28,33 +27,21 @@ void setup()
 
 void loop()
 {
-     uint8_t range = 64;
+   
+  while (true) {     
+
+     uint8_t position = random (0,pixCount);
      
+     uint8_t range = random (5,255);
      uint8_t r = random (0,range);
      uint8_t g = random (0,range);
      uint8_t b = random (0,range); 
-     uint8_t w = random (0,range);
+     uint8_t w = 0;
 
-     Serial.println(r);
-      Serial.println(g);
-       Serial.println(b);
-        Serial.println(w);
-         Serial.println("  ");
-  
-    //pStrand.pixels[stepper] = pixelFromRGBW(10, colord, 0, 0);
-    pStrand.pixels[stepper] = pixelFromRGBW(r, g, b, w);
-    
-    delay(100);
-    stepper++;
-    
-    if(stepper > 20) {
-      stepper = 0;
-      //colord += 10;
-    }
-
-    //if(colord > 60) 
-    //  colord = 0;
+    pStrand.pixels[position] = pixelFromRGBW(r, g, b, w);
     
     digitalLeds_updatePixels(&pStrand);
 
+    delay(random (10,100));
+  }
 }
