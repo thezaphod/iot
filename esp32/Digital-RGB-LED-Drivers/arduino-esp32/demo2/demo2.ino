@@ -27,7 +27,10 @@ void setup()
 
 void loop()
 {
-   
+  rainbow(20);
+  rainbowCycle(20); 
+
+  // random colors with random intervals
   while (true) {     
 
      uint8_t position = random (0,pixCount);
@@ -44,4 +47,44 @@ void loop()
 
     delay(random (10,100));
   }
+}
+
+// Slightly different, this makes the rainbow equally distributed throughout
+void rainbowCycle(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
+    for(i=0; i< pixCount; i++) {
+      pStrand.pixels[i] = Wheel(((i * 256 / pixCount + j) & 255));
+    }
+    digitalLeds_updatePixels(&pStrand);
+    delay(wait);
+  }
+}
+
+void rainbow(uint8_t wait) {
+  uint16_t i, j;
+
+  for(j=0; j<256; j++) {
+    for(i=0; i<pixCount; i++) {
+      pStrand.pixels[i] = Wheel((i+j) & 255);
+    }
+    digitalLeds_updatePixels(&pStrand);
+    delay(wait);
+  }
+}
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+pixelColor_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return pixelFromRGB(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return pixelFromRGB(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return pixelFromRGB(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
