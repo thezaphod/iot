@@ -27,11 +27,18 @@ void setup()
 
 void loop()
 {
-  rainbow(20);
   rainbowCycle(20); 
+  randomPixels();
+  rainbow(20);
 
-  // random colors with random intervals
-  while (true) {     
+}
+
+
+
+// random colors with random intervals
+void randomPixels() {
+  
+  for (int i = 0; i < 100; i++) {     
 
      uint8_t position = random (0,pixCount);
      
@@ -46,7 +53,7 @@ void loop()
     digitalLeds_updatePixels(&pStrand);
 
     delay(random (10,100));
-  }
+  } 
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout
