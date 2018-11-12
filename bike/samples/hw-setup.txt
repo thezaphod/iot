@@ -1,0 +1,21 @@
+pi@raspberrypi:~ $ dmesg | grep tty
+[    0.000000] Kernel command line: 8250.nr_uarts=1 bcm2708_fb.fbwidth=576 bcm2708_fb.fbheight=416 bcm2708_fb.fbswap=1 smsc95xx.macaddr=B8:27:EB:C5:58:F2 vc_mem.mem_base=0x1ec00000 vc_mem.mem_size=0x20000000  dwc_otg.lpm_enable=0 console=tty1 root=PARTUUID=1b49a77f-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+[    0.001341] console [tty1] enabled
+[    0.994715] 20201000.serial: ttyAMA0 at MMIO 0x20201000 (irq = 81, base_baud = 0) is a PL011 rev2
+[    3.231608] systemd[1]: Created slice system-getty.slice.
+
+/boot/config.txt
+igpu_mem=256
+enable_uart=1
+dtoverlay=pi3-disable-bt
+
+   sudo apt-get update
+   sudo apt-get install -y libav-tools
+   sudo apt-get install python 
+   sudo apt-get install python-pip
+   sudo apt-get install python-dev python-rpi.gpio
+   sudo apt-get install python-gpiozero
+
+   pip install gpi
+   pip install serial
+   pip install pyserial
