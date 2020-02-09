@@ -58,20 +58,10 @@ void gpioSetup(int gpioNum, int gpioMode, int gpioVal) {
 }
 
 strand_t STRANDS[] = { // Avoid using any of the strapping pins on the ESP32
-  {.rmtChannel = 1, .gpioNum = 17, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels =  93,
-   .pixels = nullptr, ._stateVars = nullptr},
-  {.rmtChannel = 2, .gpioNum = 18, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels =  93,
-   .pixels = nullptr, ._stateVars = nullptr},
-  {.rmtChannel = 3, .gpioNum = 19, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels =  64,
-   .pixels = nullptr, ._stateVars = nullptr},
-//{.rmtChannel = 0, .gpioNum = 16, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels = 256,
-// .pixels = nullptr, ._stateVars = nullptr},
-//  {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_SK6812W_V1, .brightLimit = 32, .numPixels = 300,
-//   .pixels = nullptr, ._stateVars = nullptr},
-  {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_WS2813_V2, .brightLimit = 32, .numPixels = 300,
-   .pixels = nullptr, ._stateVars = nullptr},
+  {.rmtChannel = 1, .gpioNum = 17, .ledType = LED_WS2812B_V3, .brightLimit = 32, .numPixels =  15,
+   .pixels = nullptr, ._stateVars = nullptr}
 };
-int STRANDCNT = sizeof(STRANDS)/sizeof(STRANDS[0]);
+int STRANDCNT = 1;
 
 // Forward declarations
 void rainbow(strand_t *, unsigned long, unsigned long);
@@ -348,6 +338,7 @@ void rainbow(strand_t * pStrand, unsigned long delay_ms, unsigned long timeout_m
 {
   strand_t * strands [] = { pStrand };
   rainbows(strands, 1, delay_ms, timeout_ms);
+  Serial.println (delay_ms);
 }
 
 //**************************************************************************//
@@ -410,34 +401,24 @@ void setup()
 
 void loop()
 {
-  strand_t * strands [] = { &STRANDS[0], &STRANDS[1], &STRANDS[2], &STRANDS[3] };
+  strand_t * strands [] = { &STRANDS[0] };
 
   int m1 = getMaxMalloc(1*1024, 16*1024*1024);
 
-  scanners(strands, 4, 0, 2000);
-  scanners(strands, 3, 0, 2000);
-  scanners(strands, 2, 0, 2000);
-  scanners(strands, 1, 0, 2000);
-  scanners(strands, 0, 0, 2000);  // NOOP: empty strand array
+  scanners(strands, 1, 10, 4000);
+  rainbows(strands, 1, 10, 4000);
 
-  rainbows(strands, 4, 0, 4000);
-  rainbows(strands, 3, 0, 4000);
-  rainbows(strands, 2, 0, 4000);
-  rainbows(strands, 1, 0, 4000);
-  rainbows(strands, 0, 0, 4000);  // NOOP: empty strand array
 
   int m2 = getMaxMalloc(1*1024, 16*1024*1024);
   assert(m2 >= m1); // Sanity check
 
-  scanner(&STRANDS[2], 1, 2000);
-  scanner(&STRANDS[2], 0, 2000);
-  scanner(&STRANDS[2], 1, 2000); // A tiny delay can smooth things out
-  scanner(&STRANDS[2], 5, 2000);
 
   for (int i = 0; i < STRANDCNT; i++) {
     strand_t * pStrand = &STRANDS[i];
-    rainbow(pStrand, 0, 2000);
-    scanner(pStrand, 0, 2000);
+    rainbow(pStrand, 10, 6000);
+    rainbow(pStrand, 10, 7000);
+    rainbow(pStrand, 10, 8000);
+    rainbow(pStrand, 10, 9000);
     digitalLeds_resetPixels(pStrand);
   }
 

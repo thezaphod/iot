@@ -65,7 +65,7 @@ void drawFrame4(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int1
   // Currently only spaces and "-" are allowed for wrapping
   display->setTextAlignment(TEXT_ALIGN_LEFT);
   display->setFont(ArialMT_Plain_10);
-  display->drawStringMaxWidth(0 + x, 10 + y, 128, "Fuck banksters. Fuck banksters. Fuck banksters. Fuck banksters." );
+  display->drawStringMaxWidth(0 + x, 10 + y, 128, "Tuck banksters. :)" );
 }
 
 void drawFrame5(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
@@ -135,5 +135,8 @@ void loop() {
     // Don't do stuff if you are below your
     // time budget.
     delay(remainingTimeBudget);
+    Serial.print(remainingTimeBudget);
+    Serial.print(" ");
   }
+  Serial.print(".");
 }
