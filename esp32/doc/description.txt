@@ -1,0 +1,17 @@
+Audio-Kit-BT-SD-V1_0.bin
+	ESP32 Audio Kit default factory firmware, support Bluetooth and TF card music playback mode, switch by button, two modes are switched by KEY2 button, when D4 is bright, it is TF card mode, when it is off, it is Bluetooth mode, TF card mode only supports MP3 format. The file is played and the music is placed in the music folder under the SD card root directory.
+	Key Function:
+
+		KEY1		|		KEY2		|		KEY3		|		KEY4		|		KEY5		|		KEY6	
+	！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！
+	  Previous		|		mode			|		Next		|	play/pause		|	  Volume plus		|		Volume reduction
+	  
+ESP-A1S-BT-V1_0.bin
+	The ESP32-A1S default firmware (first partition) only supports Bluetooth music playback.
+	  
+ESP-A1S-BT-Conrol-V1_0.bin
+	ESP32-A1S default firmware (second partition), support for Bluetooth music playback and button control
+	Key Function:
+			KEY1		|		KEY2		|		KEY3		|		KEY4		|		KEY5		|		KEY6	
+	！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！ ！
+				play		|		pause			|		Previous		|	next			|	  咄楚紗		|		Volume reduction		
