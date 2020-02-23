@@ -23,7 +23,7 @@ const int resolution = 8;
 
 const char* host = "esp32";
 const char* ssid = "t7rj";
-const char* password = "";
+const char* password = "GZyVoTdPfrzio";
 
 //variabls to blink without delay:
 const int led = 2;
@@ -197,30 +197,31 @@ void setup(void) {
 }
 
 void loop(void) {
-  //Serial.println("server ");
-  //server.handleClient();
-  //delay(1);
+  Serial.println("server ");
+  server.handleClient();
+  delay(1);
 
-  Serial.println("v motor ");
-  for (int dutyCycle = 255; dutyCycle >= 180; dutyCycle--) {
-    ledcWrite(pChannel, dutyCycle);
-    delay(30);
+  ledcWrite(pChannel, 0);
+  for (int i = 0; i < 10; i++) {
+    ledcWrite(vChannel, 255);
+    delay(random(500,1000));
+    ledcWrite(vChannel, random(0,150));
+    delay(random(500,1000));
   }
 
-  ledcWrite(vChannel, 0 );
-  Serial.println("solenoid ");
-  digitalWrite(rPin, HIGH);
-  delay(2000);
-  digitalWrite(rPin, LOW);
-  delay(2000);
+  for (int i = 0; i < 20; i++) {
+    ledcWrite(vChannel, random(0,150));
+    ledcWrite(pChannel, 160);
+    delay(random(500,2000));
+    digitalWrite(rPin, HIGH);
+    delay(500);
+    digitalWrite(rPin, LOW);
+    ledcWrite(vChannel, 200);
+    
+    delay(random(500,1000));
+  }
 
-  ledcWrite(vChannel, 255);
-  
-//  Serial.println("p motor ");
-//  for (int dutyCycle = 100; dutyCycle <= 255; dutyCycle++) {
-//    ledcWrite(pChannel, dutyCycle);
-//    delay(20);
-//  }
+
 
 
 }
