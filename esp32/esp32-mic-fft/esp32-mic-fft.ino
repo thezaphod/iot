@@ -19,8 +19,6 @@
 const i2s_port_t I2S_PORT = I2S_NUM_0;
 const int BLOCK_SIZE = 512;
 
-//const double signalFrequency = 1000;
-//const double samplingFrequency = 10000;
 const uint8_t amplitude = 150;
 
 double vReal[BLOCK_SIZE];
@@ -52,7 +50,7 @@ char webpage[] PROGMEM = R"=====(
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js'></script>
 </head>
 <body onload="javascript:init()">
-<h2>Browser Based ESP32-EYE Spectrum Analyzer</h2>
+<h2>ESP32 Spectrum Analyzer</h2>
 <div>
   <canvas id="chart" width="600" height="400"></canvas>
 </div>
