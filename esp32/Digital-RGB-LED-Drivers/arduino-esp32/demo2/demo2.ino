@@ -1,18 +1,58 @@
+#include <Arduino.h>
+#include <EEPROM.h>
 #include "esp32_digital_led_lib.h"
+
+#define EEPROM_SIZE 1024
 
 /*
  * Simplest possible example shows a single strand of NeoPixels. See Demo1 for multiple strands and other devices.
  */
 
-int pixCount = 30;
-strand_t pStrand = {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_SK6812W_V1, .brightLimit = 32, .numPixels = pixCount,
+int pixCount = 256;
+strand_t pStrand = {.rmtChannel = 0, .gpioNum = 16, .ledType = LED_WS2812B_V2, .brightLimit = 4, .numPixels = pixCount,
    .pixels = nullptr, ._stateVars = nullptr};
+
+int ledState = 1;
+
+struct Button {
+  const uint8_t PIN;
+  uint32_t numberKeyPresses;
+  bool pressed;
+};
+
+Button button1 = {18, 0, false};
+
+// executed when key pressed
+void IRAM_ATTR isr() {
+  button1.numberKeyPresses += 1;
+  button1.pressed = true;
+
+  portMUX_TYPE myMutex = portMUX_INITIALIZER_UNLOCKED;
+  taskENTER_CRITICAL(&myMutex);
+  // writing and commiting into EEPROM 
+  Serial.println(1);
+
+  EEPROM.writeUInt(0, button1.numberKeyPresses);
+  Serial.println(3);
+  EEPROM.commit();
+  Serial.println(4);
+
+  taskEXIT_CRITICAL(&myMutex);
+}
+
 
 
 void setup()
 {
+  
+  EEPROM.begin(EEPROM_SIZE);
+
   Serial.begin(115200);
   Serial.println("Initializing...");
+
+  // set up interrupt
+  pinMode(button1.PIN, INPUT_PULLUP);
+  attachInterrupt(button1.PIN, isr, FALLING);
 
   pinMode (16, OUTPUT);
   digitalWrite (16, LOW);
@@ -23,10 +63,23 @@ void setup()
   }
   
   digitalLeds_resetPixels(&pStrand);
+
+  
+  // restarting ESP
+  //Serial.println("Restarting in 10 seconds");
+  //delay(10000);
+  //ESP.restart();
 }
 
 void loop()
 {
+
+
+  uint32_t mode = EEPROM.readUInt(0);
+  Serial.println("Mode");
+  Serial.println(mode);
+  delay(1000);
+  
   rainbowCycle(20); 
   randomPixels();
   rainbow(20);
@@ -37,23 +90,25 @@ void loop()
 
 // random colors with random intervals
 void randomPixels() {
+  for (int j = 0; j < 4; j++) {
+    for (int i = 0; i < pixCount; i++) {     
   
-  for (int i = 0; i < 100; i++) {     
-
-     uint8_t position = random (0,pixCount);
-     
-     uint8_t range = random (5,255);
-     uint8_t r = random (0,range);
-     uint8_t g = random (0,range);
-     uint8_t b = random (0,range); 
-     uint8_t w = 0;
-
-    pStrand.pixels[position] = pixelFromRGBW(r, g, b, w);
-    
-    digitalLeds_updatePixels(&pStrand);
-
-    delay(random (10,100));
-  } 
+       uint8_t position = random (0,pixCount);
+       
+       uint8_t range = random (20,255);
+       uint8_t r = random (0,range);
+       uint8_t g = random (0,range);
+       uint8_t b = random (0,range); 
+       uint8_t w = 0;
+  
+      //pStrand.pixels[position] = pixelFromRGBW(r, g, b, w);
+      pStrand.pixels[position] = pixelFromRGB(r, g, b);
+      
+      digitalLeds_updatePixels(&pStrand);
+  
+      delay(random (10,100));
+    } 
+  }
 }
 
 // Slightly different, this makes the rainbow equally distributed throughout

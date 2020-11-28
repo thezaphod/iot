@@ -1,13 +1,14 @@
+
 /*------------------------------------------------------------------------------
   Code by squix78.
 
   Do you like this sample? Support my work by teleporting a coffee to me:
   https://www.paypal.com/paypalme2/squix78/5
 
-  In this blog post I described how the code works: 
+  In this blog post I described how the code works:
   https://blog.squix.org/2019/08/esp32-esp-eye-browser-based-spectrum-analyzer.html
 
-  
+
 */
 #include <WiFi.h>
 #include <WebServer.h>
@@ -15,6 +16,10 @@
 #include <Ticker.h>
 #include <arduinoFFT.h>
 #include <driver/i2s.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+
 
 const i2s_port_t I2S_PORT = I2S_NUM_0;
 const int BLOCK_SIZE = 512;
@@ -177,9 +182,34 @@ void setupMic() {
 
 
 void setup() {
-  // put your setup code here, to run once:
+
+  // initialize Wi-Fi
   WiFi.begin(ssid, password);
   Serial.begin(115200);
+
+   
+  // initilize I2C 
+  int SDA_PIN = 21;
+  int SCL_PIN = 22;
+  pinMode(SDA,INPUT_PULLUP);
+  pinMode(SCL,INPUT_PULLUP);
+  Wire.begin(SDA_PIN, SCL_PIN); // 21 & 22 are default on ESP32
+
+  findI2C();
+  
+  // initialize LCD
+  LiquidCrystal_I2C lcd(0x27, 16, 2); 
+  lcd.init();
+  lcd.backlight();
+  
+  lcd.setCursor(0, 0);
+  // print message
+  lcd.print("Line 1");
+  lcd.setCursor(0, 1);
+  lcd.print("Hello, World!");
+
+
+    
   while(WiFi.status()!=WL_CONNECTED) {
     Serial.print(".");
     delay(500);
@@ -245,11 +275,7 @@ void loop() {
     //for (byte band = 0; band <= 6; band++) display.drawHorizontalLine(18*band,64-peak[band],14);
   }
   getData();
-//  for (int i = 0; i < 8; i++) {
-//    Serial.print(String(bands[i]));
-//    Serial.print(",");
-//  }
-//  Serial.println();
+
 }
 
 void getData() {
@@ -274,4 +300,37 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
   if(type == WStype_TEXT){
 
   }
+}
+
+void findI2C() {
+
+    byte error, address;
+    int nDevices;
+    Serial.println("Scanning...");
+    nDevices = 0;
+    for(address = 1; address < 127; address++ ) {
+      Wire.beginTransmission(address);
+      error = Wire.endTransmission();
+      if (error == 0) {
+        Serial.print("I2C device found at address 0x");
+        if (address<16) {
+          Serial.print("0");
+        }
+        Serial.println(address,HEX);
+        nDevices++;
+      }
+      else if (error==4) {
+        Serial.print("Unknow error at address 0x");
+        if (address<16) {
+          Serial.print("0");
+        }
+        Serial.println(address,HEX);
+      }    
+    }
+    if (nDevices == 0) {
+      Serial.println("No I2C devices found\n");
+    }
+    else {
+      Serial.println("done\n");
+    }       
 }
